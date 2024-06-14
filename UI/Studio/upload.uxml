@@ -1,5 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Meadow%20Studio/UI/USS/main.uss?fileID=7433441132597879392&amp;guid=6636e92f09f7d433fbcc67b6b88f8944&amp;type=3#main" />
+    <Style src="project://database/Assets/Meadow-Studio/UI/USS/main.uss?fileID=7433441132597879392&amp;guid=6636e92f09f7d433fbcc67b6b88f8944&amp;type=3#main" />
     <engine:VisualElement name="upload-container" style="flex-grow: 1; margin-top: 10px; margin-right: 0; margin-bottom: 0; margin-left: 0;">
         <engine:VisualElement name="top-bar" style="flex-grow: 0; height: 50px; background-color: rgba(0, 0, 0, 0); flex-direction: row; padding-top: 0; padding-right: 10px; padding-left: 0; padding-bottom: 10px; align-items: center; border-bottom-width: 1px; border-left-color: rgb(34, 34, 34); border-right-color: rgb(34, 34, 34); border-top-color: rgb(34, 34, 34); border-bottom-color: rgb(34, 34, 34); border-top-width: 0; border-right-width: 0; border-left-width: 0; justify-content: flex-start;">
             <engine:Button name="back-button" tooltip="Refresh experiences" class="button" style="border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; height: 25px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 10px; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px; width: 25px; background-image: none; -unity-background-scale-mode: scale-and-crop;">
@@ -42,7 +42,7 @@
                 </engine:VisualElement>
             </engine:ScrollView>
             <engine:VisualElement name="upload-button-container" picking-mode="Ignore" style="flex-grow: 1; flex-shrink: 0; padding-right: 10px;">
-                <engine:Button text="Upload to Meadow" name="upload-button" class="upload-button" style="position: relative; bottom: auto; width: 100%; margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 0; padding-bottom: 0; padding-top: 0; padding-right: 0; padding-left: 0; height: 30px; top: auto; align-self: flex-start; -unity-font-style: bold; visibility: visible;" />
+                <engine:Button text="Upload to Meadow" name="upload-button" class="upload-button" style="position: relative; bottom: auto; width: 100%; margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 0; padding-bottom: 0; padding-top: 0; padding-right: 0; padding-left: 0; height: 30px; top: auto; align-self: flex-start; -unity-font-style: bold; visibility: visible; background-color: rgb(85, 152, 89);" />
             </engine:VisualElement>
         </engine:VisualElement>
     </engine:VisualElement>

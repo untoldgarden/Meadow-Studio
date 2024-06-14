@@ -35,6 +35,10 @@ namespace Meadow.Studio
         // Download image from URL
         public static async Task<HTTPSResponse> GetImage(string url)
         {
+            if(string.IsNullOrEmpty(url))
+            {
+                return new HTTPSResponse { success = false, data = null };
+            }
             if (imageCache.ContainsKey(url))
             {
                 return new HTTPSResponse { success = true, data = imageCache[url] };

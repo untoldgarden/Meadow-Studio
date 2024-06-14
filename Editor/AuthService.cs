@@ -138,7 +138,8 @@ namespace Meadow.Studio
                         DisplayName = currentUser.DisplayName,
                         IdToken = idToken,
                         RefreshToken = refreshToken,
-                        ExpiresIn = expiresIn
+                        ExpiresIn = expiresIn,
+                        ProfileThumbnail = currentUser.ProfileThumbnail
                     };
                     SaveLoginData(user);
                     currentUser = user;

@@ -38,7 +38,6 @@ namespace Meadow.Studio
         private JObject parsedResponse;
         private HashSet<string> selectedExperienceIds = new HashSet<string>();
         private Dictionary<string, List<string>> assetBundlePaths = new Dictionary<string, List<string>>();
-        private PluginUtils pluginUtil = new PluginUtils();
 
         private Texture2D loadingIcon;
         float angle = 0.0f;
@@ -55,6 +54,8 @@ namespace Meadow.Studio
         readonly AuthService authService = new();
         readonly BundleService bundleService = new();
         readonly MetadataService metadataService = new();
+        readonly UpdateService  updateService = new();
+        readonly PluginUtils pluginUtil = new();
 
         User user;
 
@@ -62,7 +63,8 @@ namespace Meadow.Studio
         [MenuItem("Meadow/Meadow Studio", false, 0)]
         public static void MeadowStudio()
         {
-            Texture logo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/Meadow Studio/Resources/logo_icon.png");
+            PluginUtils pluginUtil = new PluginUtils();
+            Texture logo = AssetDatabase.LoadAssetAtPath<Texture>(pluginUtil.GetPluginDir(true)+ "/Resources/logo_icon.png");
 
             MeadowStudioWindow wnd = GetWindow<MeadowStudioWindow>();
             wnd.titleContent = new GUIContent("Meadow Studio", logo);
@@ -91,9 +93,10 @@ namespace Meadow.Studio
 
         void OnEnable()
         {
-            loadingIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Meadow Studio/Resources/loading.png");
+            loadingIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(pluginUtil.GetPluginDir(true)+"/Resources/loading.png");
             EditorApplication.update += OnEditorUpdate;
             CreateSignInUI();
+            
             // pluginUtil.RetrieveAllAssetPaths(assetBundlePaths);
         }
         private void OnEditorUpdate()
@@ -154,6 +157,8 @@ namespace Meadow.Studio
         /// </summary>
         private void CreateSignInUI()
         {
+            CheckForUpdates();
+
             //Clear the root visual element
             VisualElement root = rootVisualElement;
             root.Clear();
@@ -170,9 +175,8 @@ namespace Meadow.Studio
                 // CoroutineRunner.Instance.StartCoroutine(GetUserExperienceMetadatas(savedUser.Email));
                 return;
             }
-
             //create the sign in UI from a uidocument
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Meadow Studio/UI/Studio/sign-in.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(pluginUtil.GetPluginDir(true) + "/UI/Studio/sign-in.uxml");
             visualTree.CloneTree(root);
 
             //set the logo-text-container sprite color depending on the theme
@@ -223,11 +227,14 @@ namespace Meadow.Studio
         /// <param name="metadata"></param>
         private async void CreateMainUI(JObject metadata)
         {
+            CheckForUpdates();
+
+
             VisualElement root = rootVisualElement;
             root.Clear();
 
             //create from ui document
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Meadow Studio/UI/Studio/main.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(pluginUtil.GetPluginDir(true) + "/UI/Studio/main.uxml");
             visualTree.CloneTree(root);
 
             //set the user profile information
@@ -341,7 +348,7 @@ namespace Meadow.Studio
         /// <param name="root">the root visual element</param>
         private void CreateExperienceList(JObject metadata, VisualElement root)
         {
-            VisualTreeAsset experienceCardAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Meadow Studio/UI/Studio/experience-card.uxml");
+            VisualTreeAsset experienceCardAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(pluginUtil.GetPluginDir(true)+"/UI/Studio/experience-card.uxml");
             Func<VisualElement> makeItem = () => experienceCardAsset.CloneTree();
             Action<VisualElement, int> bindItem = (e, i) => 
             {
@@ -427,11 +434,14 @@ namespace Meadow.Studio
 
         private async void CreateUploadUI(string experienceId, string title, bool refresh = false)
         {
+            CheckForUpdates();
+
+
             VisualElement root = rootVisualElement;
             root.Clear();
 
             //create the upload ui from a uxml document
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Meadow Studio/UI/Studio/upload.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(pluginUtil.GetPluginDir(true)+"/UI/Studio/upload.uxml");
             visualTree.CloneTree(root);
 
             //set the title
@@ -740,7 +750,7 @@ namespace Meadow.Studio
             }
             bundleSizeLabel.text = FormatBytes(combinedSize);
 
-            VisualTreeAsset filesCard = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Meadow Studio/UI/Studio/files-card.uxml");
+            VisualTreeAsset filesCard = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(pluginUtil.GetPluginDir(true)+"/UI/Studio/files-card.uxml");
             Func<VisualElement> makeItem = () => filesCard.CloneTree();
             Action<VisualElement, int> bindItem = (e, i) => SetFilesPost(e, filesWithLabel[i]);
             ListView filesListView = new ListView(filesWithLabel, 20, makeItem, bindItem);
@@ -898,6 +908,33 @@ namespace Meadow.Studio
             // Adjust the format string to your preferences. For example "{0:0.#}{1}" would
             // show a single decimal place, and "{0}{1}" would show whole numbers only.
             return String.Format("{0:0.##} {1}", bytes, sizes[order]);
+        }
+
+        private async void CheckForUpdates(){
+            var resp = await updateService.CheckForUpdates();
+
+            if (resp.success)
+            {
+                await RunOnMainThread(() =>
+                {
+                    if(resp.message == "no-update")
+                    {
+                        // no update available
+                    }
+                    if(resp.message == "update-available")
+                    {
+                        string updateUrl = resp.data.ToString();
+                        if(EditorUtility.DisplayDialog("Update Available", "A new version of Meadow Studio is available. Do you want to download it?", "Yes", "No"))
+                        {
+                            Application.OpenURL(updateUrl);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                Debug.LogError("Error checking for updates: " + resp.message);
+            }
         }
 
         private Task RunOnMainThread(Action action)

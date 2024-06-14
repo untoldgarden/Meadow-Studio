@@ -343,5 +343,18 @@ public class PluginUtils
         }
         return assetBundlePaths;
     }
-
+    public string GetPluginDir(bool removeBeforeAssets = false){
+        string[] dirs = Directory.GetDirectories(Application.dataPath, "Meadow-Studio", SearchOption.AllDirectories);
+        if (dirs.Length == 0)
+        {
+            Debug.LogError("Meadow-Studio folder not found in Assets folder");
+            return null;
+        }
+        if(removeBeforeAssets)
+        {
+            //remove the entire path before the Assets folder
+            return "Assets" + dirs[0].Split(new string[] { "Assets" }, System.StringSplitOptions.None)[1] + "/";
+        }
+        return dirs[0];
+    }
 }
