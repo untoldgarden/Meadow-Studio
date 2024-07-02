@@ -7,8 +7,10 @@ using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class MetadataService
+namespace Meadow.Studio
 {
+    public class MetadataService
+    {
         /// <summary>
         /// Gets all the user's experience metadatas and opens the experience page UI
         /// </summary>
@@ -38,5 +40,5 @@ public class MetadataService
                 
             }
         }
-
+    }
 }

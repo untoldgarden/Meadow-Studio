@@ -2,7 +2,7 @@
   "name": "com.untoldgarden.meadow-studio",
   "package-name": "https://www.github.com/untoldgarden/meadow-studio.git",
   "displayName": "Meadow Studio",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "Meadow Studio helpts with creating experiences in Unity and uploading them to the Meadow platform.",
   "unity": "2023.2",
   "author": {
@@ -11,5 +11,7 @@
     "url": "https://meadow.space"
   },
   "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.unity.modules.unitywebrequest": "1.0.0"
   }
 }
